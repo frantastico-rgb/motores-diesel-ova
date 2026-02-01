@@ -182,7 +182,7 @@
         ==================================== */
         .featured-section {
             position: relative;
-            background: transparent; /* Sin fondo de color - solo la imagen */
+            background: transparent;
             padding: 0;
             margin-bottom: 3rem;
             border-radius: 12px;
@@ -194,7 +194,7 @@
             justify-content: center;
         }
 
-        /* Imagen de fondo (motorespublicidadfinal.png) - VERDE ORIGINAL VISIBLE */
+        /* Imagen de fondo (motorespublicidadfinal.png) - SIN ALTERAR, COLORES ORIGINALES */
         .featured-background {
             position: absolute;
             top: 0;
@@ -204,36 +204,39 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 1; /* Opacidad al 100% para ver el verde real */
+            opacity: 1; /* Sin alteraciones - imagen original completa */
             z-index: 0;
         }
 
-        /* Imagen centrada (lostresmo.png) - MÁS PEQUEÑA */
+        /* Imagen centrada (lostresmo.png) - SIN ALTERAR, COLORES ORIGINALES */
         .featured-center-image {
             position: relative;
             z-index: 2;
-            max-width: 400px; /* Reducido de 600px a 400px */
-            width: 70%; /* Reducido de 90% a 70% */
+            max-width: 400px; 
+            width: 70%; 
             margin: 2rem auto;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            /* Sin filtros ni alteraciones - colores originales */
         }
 
-        /* Texto del colage - FONDO MÁS OSCURO PARA CONTRASTE */
+        /* Solo el texto overlay necesita fondo para contraste */
         .featured-text {
             position: relative;
             z-index: 3;
-            font-size: clamp(1.1rem, 2.5vw, 1.6rem); /* Ligeramente más pequeño */
-            color: white; /* Cambiado a blanco para mejor contraste */
+            font-size: clamp(1rem, 2.2vw, 1.6rem);
+            color: white;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-align: center;
-            padding: 1.5rem 2rem;
-            background: rgba(0, 50, 77, 0.85); /* Fondo azul oscuro semi-transparente */
-            border-radius: 25px;
-            max-width: 85%;
+            padding: 1.2rem 1.5rem;
+            background: rgba(0, 50, 77, 0.9); /* Solo este elemento tiene fondo */
+            border-radius: 20px;
+            max-width: 90%;
+            margin: 0 1rem;
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            line-height: 1.3;
         }
 
         /* ====================================
@@ -517,18 +520,52 @@
                 height: 250px;
             }
 
+            /* OPTIMIZACIONES PARA COLAGE EN MÓVILES */
             .featured-section {
-                min-height: 450px;
+                min-height: 400px;
+                padding: 1rem 0.5rem;
+            }
+
+            .featured-background {
+                object-fit: cover; /* Mantener cover para preservar el diseño */
+                object-position: center center;
+                /* Sin background-color adicional - imagen original completa */
             }
 
             .featured-center-image {
-                max-width: 300px; /* Aún más pequeño en móviles */
-                width: 65%;
+                max-width: 280px; /* Más pequeño pero proporcional */
+                width: 75%; /* Equilibrio visual con el fondo */
+                margin: 1rem auto;
+            }
+
+            .featured-text {
+                font-size: clamp(0.9rem, 3.5vw, 1.2rem); /* Texto más pequeño pero legible */
+                padding: 1rem 1.2rem; /* Padding más compacto */
+                max-width: 95%; /* Casi todo el ancho disponible */
+                margin: 0.5rem auto; /* Margen reducido */
+                border-radius: 15px; /* Border radius más pequeño */
+                background: rgba(0, 50, 77, 0.95); /* Fondo más opaco para móviles */
+                letter-spacing: 0.5px; /* Menos espaciado de letras */
+                line-height: 1.25; /* Líneas más compactas */
             }
 
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 2.5rem;
+            }
+        }
+
+        /* Optimización adicional para pantallas muy pequeñas */
+        @media (max-width: 360px) {
+            .featured-text {
+                font-size: 0.85rem; /* Texto aún más pequeño para pantallas muy pequeñas */
+                padding: 0.8rem 1rem;
+                margin: 0.5rem;
+            }
+
+            .featured-center-image {
+                max-width: 250px;
+                width: 90%;
             }
         }
 
