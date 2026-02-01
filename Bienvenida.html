@@ -287,6 +287,15 @@
             display: block;
         }
 
+        .video-wrapper iframe {
+            width: 100%;
+            height: 80vh;
+            max-height: 600px;
+            min-height: 400px;
+            display: block;
+            border: none;
+        }
+
         .video-close {
             position: absolute;
             top: 15px;
@@ -541,10 +550,24 @@
     <div class="video-modal" id="videoModal">
         <div class="video-wrapper">
             <button class="video-close" id="videoClose" aria-label="Cerrar video">✕</button>
-            <video id="mainVideo" controls>
+            
+            <!-- Video local (se mostrará en localhost) -->
+            <video id="mainVideo" controls style="display: none;">
                 <source src="El Mantenimiento de Motores Diesel.mp4" type="video/mp4">
                 Tu navegador no soporta la reproducción de video.
             </video>
+            
+            <!-- Video de YouTube (se mostrará en GitHub Pages) -->
+            <iframe id="youtubeVideo" 
+                    width="100%" 
+                    height="600" 
+                    src=""
+                    title="Mantenimiento de Motores Diesel - SENA"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    style="display: none;">
+            </iframe>
         </div>
     </div>
 
@@ -618,24 +641,71 @@
             const videoModal = document.getElementById('videoModal');
             const videoClose = document.getElementById('videoClose');
             const mainVideo = document.getElementById('mainVideo');
+            const youtubeVideo = document.getElementById('youtubeVideo');
+
+            // URLs de los videos
+            const youtubeBaseUrl = 'https://www.youtube.com/embed/EizoqB8aIfo';
+            const youtubePlayUrl = youtubeBaseUrl + '?autoplay=1&controls=1&modestbranding=1&rel=0';
+            const youtubeStopUrl = youtubeBaseUrl + '?autoplay=0&controls=1&modestbranding=1&rel=0';
+
+            // Detectar si estamos en localhost o GitHub Pages
+            const isLocal = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.protocol === 'file:' ||
+                           window.location.href.includes('127.0.0.1');
+
+            // Configurar qué video mostrar según el entorno
+            function setupVideo() {
+                if (isLocal) {
+                    // Usar video local
+                    mainVideo.style.display = 'block';
+                    youtubeVideo.style.display = 'none';
+                    console.log('🎬 Modo LOCAL: Usando video archivo local');
+                } else {
+                    // Usar video de YouTube
+                    mainVideo.style.display = 'none';
+                    youtubeVideo.style.display = 'block';
+                    // NO cargar el video aún, solo cuando se abra el modal
+                    console.log('🎬 Modo GITHUB PAGES: Configurado para usar video de YouTube');
+                }
+            }
+
+            // Inicializar configuración de video
+            setupVideo();
 
             // Abrir modal de video
             function openVideo() {
                 videoModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
                 
-                setTimeout(() => {
-                    mainVideo.play().catch(err => {
-                        console.log('Autoplay no permitido:', err);
-                    });
-                }, 300);
+                if (isLocal) {
+                    // Para video local
+                    setTimeout(() => {
+                        mainVideo.play().catch(err => {
+                            console.log('Autoplay no permitido (video local):', err);
+                        });
+                    }, 300);
+                } else {
+                    // Para YouTube, cargar la URL solo cuando se abre el modal
+                    youtubeVideo.src = youtubePlayUrl;
+                    console.log('Video de YouTube cargado con autoplay');
+                }
             }
 
             // Cerrar modal de video
             function closeVideo() {
                 videoModal.classList.remove('active');
-                mainVideo.pause();
-                mainVideo.currentTime = 0;
+                
+                if (isLocal) {
+                    // Pausar video local
+                    mainVideo.pause();
+                    mainVideo.currentTime = 0;
+                } else {
+                    // Detener YouTube completamente removiendo el src
+                    youtubeVideo.src = '';
+                    console.log('Video de YouTube detenido');
+                }
+                
                 document.body.style.overflow = 'auto';
             }
 
@@ -657,26 +727,34 @@
                 }
             });
 
-            // Prevenir cierre al clickear el video
-            mainVideo.addEventListener('click', function(e) {
+            // Prevenir cierre al clickear el contenido del video
+            document.querySelector('.video-wrapper').addEventListener('click', function(e) {
                 e.stopPropagation();
             });
 
-            // Manejo de errores de video
-            mainVideo.addEventListener('error', function(e) {
-                console.error('Error al cargar el video:', e);
-                alert('Error al cargar el video. Verifica que el archivo existe en la carpeta correcta.');
-            });
+            // Manejo de errores de video local (solo si es local)
+            if (isLocal) {
+                mainVideo.addEventListener('error', function(e) {
+                    console.error('Error al cargar el video local:', e);
+                    alert('Error al cargar el video local. Verifica que el archivo "El Mantenimiento de Motores Diesel.mp4" existe en la carpeta correcta.');
+                });
 
-            // Log cuando el video está listo
-            mainVideo.addEventListener('loadedmetadata', function() {
-                console.log('Video cargado correctamente');
-            });
+                // Log cuando el video local está listo
+                mainVideo.addEventListener('loadedmetadata', function() {
+                    console.log('✅ Video local cargado correctamente');
+                });
 
-            // Cerrar automáticamente cuando termina el video (opcional)
-            mainVideo.addEventListener('ended', function() {
-                setTimeout(closeVideo, 1000); // Espera 1 segundo antes de cerrar
-            });
+                // Cerrar automáticamente cuando termina el video local
+                mainVideo.addEventListener('ended', function() {
+                    setTimeout(closeVideo, 1000);
+                });
+            }
+
+            // Información de debug
+            console.log(`🌍 Entorno detectado: ${isLocal ? 'LOCAL' : 'GITHUB PAGES'}`);
+            console.log(`📍 Hostname: ${window.location.hostname}`);
+            console.log(`🔗 Protocol: ${window.location.protocol}`);
+            console.log(`📄 URL completa: ${window.location.href}`);
         });
     </script>
 </body>
