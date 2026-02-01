@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JUEGO DE MEMORIA – Pregunta y Respuesta</title>
+
+<style>
+  body {
+    font-family: work sans, sans-serif;
+    background-image: url("fondoilustradosena.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .titulo-box {
+    background: rgba(255,255,255,0.85);
+    padding: 20px 30px;
+    margin: auto;
+    width: fit-content;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    margin-bottom: 25px;
+  }
+
+  h1 {
+    color: #00304D;
+    text-shadow: 1px 1px 4px #ffffff;
+    font-size: 38px;
+    margin: 0;
+  }
+
+  h2 {
+    color: #00304D;
+    text-shadow: 1px 1px 4px #ffffff;
+    font-size: 20px;
+    margin: 5px 0 0;
+  }
+
+  #vidasContainer {
+    margin-bottom: 25px;
+  }
+
+  .estrella {
+    font-size: 50px;
+    margin: 0 3px;
+    transition: opacity 0.3s ease;
+  }
+
+  .memory-game {
+    width: 900px;
+    max-width: 95%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    justify-content: center;
+  }
+
+  .card {
+    width: 250px;
+    height: 250px;
+    background: #ffffff;
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+  }
+
+  .card.flip {
+    transform: rotateY(180deg);
+  }
+
+  .front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* ⭐ Frente = textura */
+  .front {
+    background-image: url("fondotextura1.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* ⭐ Parte trasera = la imagen real */
+  .back {
+    transform: rotateY(180deg);
+    background: white;
+  }
+
+  .back img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+  }
+
+  /* ocultar por defecto (usado para la caja de instrucciones) */
+  .hidden { display: none !important; }
+
+  /* pequeño botón que aparece cuando las instrucciones están cerradas */
+  #instr-btn-mini {
+    position: fixed;
+    bottom: 26px;
+    right: 110px;
+    top: 1280px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2aa837;
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+    cursor: pointer;
+    z-index: 1200;
+  }
+
+  /* ajuste: desplazar la caja de instrucciones si es necesario (evitar solapamiento) */
+  .instrucciones-box {
+    z-index: 1100;
+    transition: opacity .18s ease, transform .18s ease;
+    position: fixed; /* mantener fija para UX consistente */
+    bottom: 86px;    /* dejar espacio para el botón pequeño */
+    right: 145px;
+    width: 540px;
+    max-width: 90%;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 20px 24px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    font-size: 14px;
+    text-align: left;
+    backdrop-filter: blur(3px);
+  }
+
+  /* botón cerrar dentro de la caja de instrucciones */
+  #instr-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #00304D;
+  }
+
+  /* versión responsiva: caja más pequeña en móviles */
+  @media (max-width: 420px) {
+    .instrucciones-box { bottom: 76px; right: 12px; left: 12px; width: auto; padding: 14px; }
+    #instr-btn-mini { right: 12px; bottom: 18px; width: 40px; height: 40px; font-size: 16px; }
+    #instr-close { top: 6px; right: 8px; width: 30px; height: 30px; font-size: 18px; }
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="titulo-box">
+  <h1>JUEGO DE MEMORIA</h1>
+  <h2>Pregunta y Respuesta</h2>
+</div>
+
+<div id="vidasContainer"></div>
+
+<div id="game" class="memory-game"></div>
+
+<!-- caja de instrucciones: inicia oculta y será mostrada automáticamente la primera vez -->
+<div id="instrucciones-box" class="instrucciones-box hidden" role="dialog" aria-labelledby="inst-title" aria-modal="false">
+  <button id="instr-close" aria-label="Cerrar instrucciones">×</button>
+  <h3 id="inst-title">📘 Instrucciones del Juego – Pregunta y Respuesta</h3>
+  <p><strong>1️⃣ Da clic en una carta para revelar una imagen.</strong></p>
+  <p><strong>2️⃣ Busca su pareja correspondiente.</strong></p>
+  <p><strong>3️⃣ Si fallas pierdes una vida.</strong></p>
+  <p><strong>4️⃣ Completa todas las parejas para ganar.</strong></p>
+  <p><small>Esta ayuda se mostrará automáticamente la primera vez por 6s.</small></p>
+</div>
+
+<!-- pequeño botón que aparece cuando las instrucciones están cerradas -->
+<button id="instr-btn-mini" aria-expanded="false" aria-controls="instrucciones-box" title="Mostrar instrucciones">i</button>
+
+<script>
+/* ================================
+      CONFIGURACIÓN DE PAREJAS
+================================ */
+
+const parejas = [
+  { pregunta: "pregunta1.png", respuesta: "respuesta1.png" },
+  { pregunta: "pregunta2.png", respuesta: "respuesta2.png" },
+  { pregunta: "pregunta3.png", respuesta: "respuesta3.png" },
+  { pregunta: "pregunta4.png", respuesta: "respuesta4.png" },
+  { pregunta: "pregunta5.png", respuesta: "respuesta5.png" },
+  { pregunta: "pregunta6.png", respuesta: "respuesta6.png" },
+  { pregunta: "pregunta7.png", respuesta: "respuesta7.png" },
+  { pregunta: "pregunta8.png", respuesta: "respuesta8.png" }
+];
+
+/* ==================================
+            VIDAS ⭐
+================================== */
+
+let vidas = 5;
+
+function dibujarVidas() {
+  const cont = document.getElementById("vidasContainer");
+  cont.innerHTML = "";
+  for (let i = 0; i < vidas; i++) {
+    cont.innerHTML += `<span class="estrella">⭐️</span>`;
+  }
+}
+dibujarVidas();
+
+/* ==================================
+        CREAR CARTAS
+================================== */
+
+let cartas = [];
+
+parejas.forEach((p) => {
+  cartas.push({ tipo: "pregunta", img: p.pregunta, link: p.respuesta });
+  cartas.push({ tipo: "respuesta", img: p.respuesta, link: p.pregunta });
+});
+
+cartas = cartas.sort(() => Math.random() - 0.5);
+
+const game = document.getElementById("game");
+
+cartas.forEach((carta) => {
+  const div = document.createElement("div");
+  div.classList.add("card");
+
+  div.dataset.tipo = carta.tipo;
+  div.dataset.img = carta.img;
+  div.dataset.link = carta.link;
+
+  div.innerHTML = `
+    <div class="front"></div>
+    <div class="back"><img src="${carta.img}" /></div>
+  `;
+
+  game.appendChild(div);
+});
+
+/* ==================================
+            LÓGICA DEL JUEGO
+================================== */
+
+let primera = null;
+let segunda = null;
+let bloqueo = false;
+
+function voltear() {
+  if (bloqueo) return;
+  if (this === primera) return;
+
+  this.classList.add("flip");
+
+  if (!primera) {
+    primera = this;
+    return;
+  }
+
+  segunda = this;
+  validarPareja();
+}
+
+function validarPareja() {
+  const img1 = primera.dataset.img;
+  const img2 = segunda.dataset.img;
+
+  const link1 = primera.dataset.link;
+  const link2 = segunda.dataset.link;
+
+  if (img1 === link2 || img2 === link1) {
+    primera.removeEventListener("click", voltear);
+    segunda.removeEventListener("click", voltear);
+    reset();
+    verificarVictoria();
+  } else {
+    vidas--;
+    dibujarVidas();
+
+    if (vidas <= 0) {
+      setTimeout(() => {
+        alert("❌ ¡Te quedaste sin vidas! Reiniciando...");
+        location.reload();
+      }, 500);
+      return;
+    }
+
+    bloqueo = true;
+    setTimeout(() => {
+      primera.classList.remove("flip");
+      segunda.classList.remove("flip");
+      reset();
+    }, 800);
+  }
+}
+
+function reset() {
+  primera = null;
+  segunda = null;
+  bloqueo = false;
+}
+
+function verificarVictoria() {
+  const volteadas = document.querySelectorAll(".flip").length;
+  const total = cartas.length;
+
+  if (volteadas === total) {
+    setTimeout(() => {
+      alert("🎉 ¡Completaste todas las parejas!");
+    }, 300);
+  }
+}
+
+document.querySelectorAll(".card").forEach(card =>
+  card.addEventListener("click", voltear)
+);
+
+/* script para controlar la apertura automática 6s la primera vez y el botón mini */
+(function () {
+  const box = document.getElementById('instrucciones-box');
+  const mini = document.getElementById('instr-btn-mini');
+  const closeBtn = document.getElementById('instr-close');
+  const STORAGE_KEY = 'memoria_instrucciones_mostrado_v1';
+
+  function showBox() {
+    box.classList.remove('hidden');
+    mini.style.display = 'none';
+    mini.setAttribute('aria-expanded', 'true');
+    box.focus && box.focus();
+  }
+
+  function hideBox() {
+    box.classList.add('hidden');
+    mini.style.display = 'flex';
+    mini.setAttribute('aria-expanded', 'false');
+  }
+
+  // comportamiento del botón mini: abrir la caja
+  mini.addEventListener('click', () => {
+    showBox();
+  });
+
+  // cerrar desde el icono X
+  closeBtn.addEventListener('click', () => {
+    hideBox();
+  });
+
+  // cerrar al hacer clic fuera de la caja (opcional)
+  document.addEventListener('click', (e) => {
+    if (!box.classList.contains('hidden')) {
+      if (!box.contains(e.target) && e.target !== mini) {
+        hideBox();
+      }
+    }
+  });
+
+  // mostrar la primera vez durante 6 segundos
+  const shownBefore = sessionStorage.getItem(STORAGE_KEY);
+  if (!shownBefore) {
+    // mostrar inmediatamente
+    showBox();
+    setTimeout(() => {
+      hideBox();
+      // marcar como mostrado en esta sesión
+      sessionStorage.setItem(STORAGE_KEY, 'true');
+    }, 6000);
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+# VS Code
+.vscode/
+*.code-workspace
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Node modules (if added later)
+node_modules/
+
+# Build files
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+
+# Large video files (exceeds GitHub 100MB limit)
+*.mp4
+*.mov
+*.avi
+"El Mantenimiento de Motores Diesel.mp4"
+
+# Backup files
+*.backup
+*.bak

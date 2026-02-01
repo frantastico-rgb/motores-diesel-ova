@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explora - Mantenimiento de Motores Diesel | SENA</title>
+    
+    <style>
+        /* ====================================
+           RESET Y CONFIGURACIÓN BASE
+        ==================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ====================================
+           NAVBAR - RESPONSIVE CON LOGO
+        ==================================== */
+        .navbar {
+            background: linear-gradient(135deg, #00324d 0%, #005581 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.2rem;
+            overflow: hidden;
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .nav-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: white;
+            border: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: white;
+            color: #00324d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .nav-item.active {
+            background-color: white;
+            color: #00324d;
+            border-color: #fbbf24;
+        }
+
+        /* ====================================
+           HERO SECTION - GALERÍA
+        ==================================== */
+        .hero-section {
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 4rem 2rem;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .hero-title {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 3rem;
+        }
+
+        .hero-title h1 {
+            color: #00324d;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        /* ====================================
+           GALERÍA DE IMÁGENES
+        ==================================== */
+        .gallery-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .gallery-item-content {
+            padding: 1.5rem;
+        }
+
+        .gallery-item h3 {
+            color: #00324d;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* ====================================
+           SECCIÓN RECURSOS
+        ==================================== */
+        .resources-section {
+            background: #f8fafc;
+            padding: 4rem 2rem;
+            margin-top: 2rem;
+        }
+
+        .resources-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .resources-title {
+            color: #00324d;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 1rem;
+            max-width: 400px;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .resource-card img {
+            max-width: 200px;
+            margin: 0 auto 1rem;
+        }
+
+        .resource-card h3 {
+            color: #00324d;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .resource-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .download-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .download-button:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .download-button::before {
+            content: "📥 ";
+            margin-right: 0.5rem;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ====================================
+           JUEGO COMO ENLACE
+        ==================================== */
+        .game-section {
+            background: #e5f5e5;
+            padding: 4rem 2rem;
+            margin-top: 2rem;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .game-title {
+            color: #00324d;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-preview {
+            text-align: center;
+        }
+
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-preview h3 {
+            color: #00324d;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .game-preview p {
+            color: #64748b;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .game-features {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .feature {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid #bbf7d0;
+        }
+
+        .play-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .play-button:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        /* ====================================
+           ZOOM DE IMÁGENES DE GALERÍA
+        ==================================== */
+        .gallery-item {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Modal para imagen ampliada */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            cursor: pointer;
+        }
+
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #fbbf24;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ====================================
+           FOOTER
+        ==================================== */
+        .footer {
+            background: linear-gradient(135deg, #00324d 0%, #1e293b 100%);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-info h3 {
+            color: #fbbf24;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-info p {
+            margin-bottom: 0.5rem;
+            color: #94a3b8;
+        }
+
+        .footer-social {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-link:hover {
+            background: #fbbf24;
+            transform: translateY(-3px);
+        }
+
+        .social-link svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* ====================================
+           MEDIA QUERIES - RESPONSIVE
+        ==================================== */
+        @media (min-width: 768px) {
+            .logo-text {
+                display: block;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .game-iframe {
+                height: 800px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .navbar {
+                padding: 1.5rem 4rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .game-iframe {
+                height: 1000px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR CON LOGO -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="navbar-container">
+            <!-- Logo SENA -->
+            <a href="index.html" class="navbar-logo">
+                <div class="logo-icon">
+                    <img src="img/image-1.png" alt="Logo SENA" class="logo-image">
+                </div>
+                <span class="logo-text">SENA</span>
+            </a>
+
+            <!-- Menú de navegación -->
+            <div class="nav-menu">
+                <a href="Bienvenida.html" class="nav-item">Bienvenida</a>
+                <a href="index.html" class="nav-item">Inicio</a>
+                <a href="explora.html" class="nav-item active">Explora</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <!-- Imagen de fondo -->
+        <img class="hero-background" src="img/fondointegradochica.png" alt="Fondo de galería">
+        
+        <!-- Contenido principal -->
+        <div class="hero-content">
+            <!-- Título principal -->
+            <div class="hero-title">
+                <h1>Galería de Motores Diesel</h1>
+            </div>
+
+            <!-- Galería de imágenes -->
+            <div class="gallery-container">
+                <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal(this)">
+                        <img src="img/IMG_0663.jpg" alt="Motor Diesel 1">
+                        <div class="gallery-item-content">
+                            <h3>Sistema de Inyección</h3>
+                            <p>Componentes del sistema de inyección diesel</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal(this)">
+                        <img src="img/IMG_0721.jpg" alt="Motor Diesel 2">
+                        <div class="gallery-item-content">
+                            <h3>Bloque de Motor</h3>
+                            <p>Vista detallada del bloque de motor diesel</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal(this)">
+                        <img src="img/IMG_0807.jpg" alt="Motor Diesel 3">
+                        <div class="gallery-item-content">
+                            <h3>Sistema de Refrigeración</h3>
+                            <p>Componentes de refrigeración del motor</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal(this)">
+                        <img src="img/IMG_0711.jpg" alt="Motor Diesel 4">
+                        <div class="gallery-item-content">
+                            <h3>Sistema Eléctrico</h3>
+                            <p>Conexiones eléctricas del motor</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal(this)">
+                        <img src="img/IMG_0760.jpg" alt="Motor Diesel 5">
+                        <div class="gallery-item-content">
+                            <h3>Filtros y Mantenimiento</h3>
+                            <p>Elementos de filtración y mantenimiento</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal(this)">
+                        <img src="img/IMG_0762.jpg" alt="Motor Diesel 6">
+                        <div class="gallery-item-content">
+                            <h3>Herramientas Especializadas</h3>
+                            <p>Herramientas para mantenimiento de motores</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE RECURSOS -->
+    <section class="resources-section">
+        <div class="resources-container">
+            <h2 class="resources-title">Cartilla Interactiva</h2>
+            
+            <div class="resource-card">
+                <img src="img/larevistamd.png" alt="Cartilla de Mantenimiento">
+                <h3>Manual de Mantenimiento</h3>
+                <p>Descarga la cartilla completa de mantenimiento de motores diesel. Incluye procedimientos, diagramas y mejores prácticas.</p>
+                <a href="Mantenimiento de Motores Diesel JefV.pdf" 
+                   download="Manual_Mantenimiento_Motores_Diesel.pdf" 
+                   class="download-button">
+                   Descargar Manual
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DEL JUEGO -->
+    <section class="game-section">
+        <div class="game-container">
+            <h2 class="game-title">Juego Interactivo - Memoria SENA</h2>
+            <div class="game-card">
+                <div class="game-preview">
+                    <div class="game-icon">🎮</div>
+                    <h3>Juego de Memoria</h3>
+                    <p>Pon a prueba tu conocimiento sobre mantenimiento de motores diesel emparejando preguntas con sus respuestas correctas.</p>
+                    <div class="game-features">
+                        <span class="feature">🧠 8 Parejas</span>
+                        <span class="feature">⭐ 5 Vidas</span>
+                        <span class="feature">📱 Móvil Friendly</span>
+                    </div>
+                    <a href="Juego dememoriapregunta.html" target="_blank" class="play-button">
+                        🎯 Jugar Ahora
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>SENA</h3>
+                <p>Carrera 48 # 6-40 Urb. Guayuriba</p>
+                <p>servicioalciudadano@sena.edu.co</p>
+            </div>
+
+            <div class="footer-social">
+                <a href="https://www.facebook.com/groups/566675547810297/?ref=share&mibextid=NSMWBT" 
+                   target="_blank" rel="noopener noreferrer" class="social-link">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="https://youtube.com/@senacomunica?si=erY407bPXJVqN_Ln" 
+                   target="_blank" rel="noopener noreferrer" class="social-link">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/senacomunica?igsh=bTh3NWx0b2Zkb3My" 
+                   target="_blank" rel="noopener noreferrer" class="social-link">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="footer-bottom">
+                <p><strong>SENA</strong> | Copyright © 2025 | Todos los Derechos Reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL PARA ZOOM DE IMÁGENES -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        // Función para abrir imagen en modal
+        function openImageModal(galleryItem) {
+            const img = galleryItem.querySelector('img');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            
+            modal.classList.add('active');
+            modalImg.src = img.src;
+            modalImg.alt = img.alt;
+            
+            // Prevenir que el body haga scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para cerrar modal
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            
+            // Restaurar scroll del body
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
